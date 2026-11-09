@@ -1,0 +1,13 @@
+# Сборочный образ: JDK 21 + Maven + docker CLI 
+FROM maven:3.9-eclipse-temurin-21
+
+# docker CLI берём готовым бинарником из официального образа (без apt-key и т.п.)
+COPY --from=docker:27-cli /usr/local/bin/docker /usr/local/bin/docker
+
+# git/ssh могут понадобиться для checkout и деплоя по ssh
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends git openssh-client \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+
+WORKDIR /workspace
